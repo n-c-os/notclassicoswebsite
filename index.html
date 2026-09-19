@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Not-ClassicOS — Raffy's Weird Projects</title>
+
+  <meta
+    name="description"
+    content="Not-ClassicOS is a tiny experimental operating system by Raffy's Weird Projects."
+  >
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f4f4f1;
+      --text: #111;
+      --muted: #777;
+      --line: #c8c8c2;
+      --panel: #eaeae5;
+      --accent: #ff3b30;
+    }
+
+    body.dark {
+      --bg: #0b0b0b;
+      --text: #f5f5f2;
+      --muted: #8c8c87;
+      --line: #303030;
+      --panel: #151515;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        Inter,
+        Helvetica Neue,
+        Helvetica,
+        Arial,
+        sans-serif;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1050px, calc(100% - 36px));
+      margin: auto;
+    }
+
+    nav {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 13px;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      padding: 8px 12px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    button:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .hero {
+      min-height: 620px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 0;
+    }
+
+    .tag {
+      font-family: monospace;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 850px;
+      font-size: clamp(58px, 11vw, 130px);
+      line-height: 0.85;
+      letter-spacing: -7px;
+    }
+
+    .hero-description {
+      max-width: 590px;
+      margin-top: 40px;
+      font-size: 20px;
+      line-height: 1.5;
+    }
+
+    .status {
+      margin-top: 40px;
+      display: flex;
+      gap: 28px;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    .status-item::before {
+      content: "●";
+      color: var(--accent);
+      margin-right: 8px;
+    }
+
+    section {
+      border-top: 1px solid var(--line);
+      padding: 70px 0;
+    }
+
+    h2 {
+      font-family: monospace;
+      font-size: 15px;
+      font-weight: normal;
+      margin: 0 0 35px;
+      color: var(--muted);
+    }
+
+    .big-text {
+      max-width: 800px;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .card {
+      min-height: 180px;
+      padding: 25px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card-number {
+      font-family: monospace;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .card h3 {
+      font-size: 20px;
+      margin: 30px 0 10px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .terminal {
+      background: #050505;
+      color: #f0f0ea;
+      padding: 28px;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .terminal .red {
+      color: #ff3b30;
+    }
+
+    .specs {
+      font-family: monospace;
+      border-top: 1px solid var(--line);
+    }
+
+    .spec {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 30px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .spec-name {
+      color: var(--muted);
+    }
+
+    .roadmap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .roadmap-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 25px;
+      border-top: 1px solid var(--line);
+      padding: 25px 0;
+    }
+
+    .roadmap-version {
+      font-family: monospace;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 50px 0 80px;
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      font-family: monospace;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .dot-logo {
+      display: grid;
+      grid-template-columns: repeat(5, 8px);
+      gap: 5px;
+      margin-bottom: 35px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text);
+    }
+
+    .dot.off {
+      opacity: 0.1;
+    }
+
+    @media (max-width: 720px) {
+      h1 {
+        letter-spacing: -4px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .spec,
+      .roadmap-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .status {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .nav-right a {
+        display: none;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page">
+
+    <nav>
+      <div class="logo">NOT-CLASSIC OS</div>
+
+      <div class="nav-right">
+        <a href="#about">ABOUT</a>
+        <a href="#technology">TECH</a>
+        <a href="#roadmap">ROADMAP</a>
+        <button onclick="toggleTheme()">◐ MODE</button>
+      </div>
+    </nav>
+
+
+    <main>
+
+      <section class="hero">
+
+        <div class="dot-logo">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot off"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+
+          <div class="dot"></div>
+          <div class="dot off"></div>
+          <div class="dot"></div>
+          <div class="dot off"></div>
+          <div class="dot"></div>
+        </div>
+
+        <div class="tag">
+          RAFFY'S WEIRD PROJECTS / PROJECT 001
+        </div>
+
+        <h1>
+          NOT-<br>
+          CLASSIC<br>
+          OS
+        </h1>
+
+        <p class="hero-description">
+          A tiny experimental operating system built from scratch.
+          Not Linux. Not Windows. Not macOS. Not ChromeOS.
+          Just something different.
+        </p>
+
+        <div class="status">
+          <div class="status-item">OPEN SOURCE</div>
+          <div class="status-item">MIT LICENSE</div>
+          <div class="status-item">EARLY DEVELOPMENT</div>
+        </div>
+
+      </section>
+
+
+      <section id="about">
+
+        <h2>[ 01 / IDEA ]</h2>
+
+        <div class="big-text">
+          Computers became enormous.
+          Not-ClassicOS is an experiment in making an operating system
+          small, understandable and fun again.
+        </div>
+
+      </section>
+
+
+      <section>
+
+        <h2>[ 02 / PRINCIPLES ]</h2>
+
+        <div class="grid">
+
+          <div class="card">
+            <div class="card-number">01</div>
+            <h3>Tiny</h3>
+            <p>
+              Designed to remain small enough to test using tiny virtual
+              disks instead of multi-gigabyte virtual machines.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-number">02</div>
+            <h3>From scratch</h3>
+            <p>
+              Not-ClassicOS is intended to have its own kernel and system
+              components rather than being another Linux distribution.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-number">03</div>
+            <h3>Visual</h3>
+            <p>
+              Minimal monochrome graphics, technical information and
+              carefully limited use of colour.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-number">04</div>
+            <h3>Understandable</h3>
+            <p>
+              The project should remain readable enough for its creator
+              to understand how each major component works.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-number">05</div>
+            <h3>Experimental</h3>
+            <p>
+              Not everything needs to behave like Windows, macOS or Linux.
+              Strange ideas are allowed.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-number">06</div>
+            <h3>Open</h3>
+            <p>
+              Source code released publicly under the permissive MIT License.
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section id="technology">
+
+        <h2>[ 03 / TECHNOLOGY ]</h2>
+
+        <div class="specs">
+
+          <div class="spec">
+            <div class="spec-name">MAIN LANGUAGE</div>
+            <div>Rust</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">LOW-LEVEL CODE</div>
+            <div>Rust + small amounts of Assembly where required</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">BOOT</div>
+            <div>UEFI</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">FIRST CPU TARGET</div>
+            <div>AArch64 / ARM64</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">FUTURE TARGET</div>
+            <div>x86-64</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">KERNEL</div>
+            <div>Custom kernel developed for Not-ClassicOS</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">GRAPHICS</div>
+            <div>UEFI framebuffer first, custom graphics stack later</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">UI</div>
+            <div>Custom lightweight desktop interface</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">FILESYSTEM</div>
+            <div>Simple filesystem first; custom filesystem may come later</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">TEST ENVIRONMENT</div>
+            <div>QEMU</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">DEVELOPMENT COMPUTER</div>
+            <div>macOS on Apple Silicon</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">TARGET IMAGE SIZE</div>
+            <div>Tens of megabytes during early development</div>
+          </div>
+
+          <div class="spec">
+            <div class="spec-name">LICENSE</div>
+            <div>MIT</div>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section>
+
+        <h2>[ 04 / BOOT CONCEPT ]</h2>
+
+        <div class="terminal">
+<span class="red">●</span> NOT-CLASSIC OS
+
+BUILD 0001
+Raffy's Weird Projects
+
+[ OK ] MEMORY
+[ OK ] DISPLAY
+[ OK ] INPUT
+[ -- ] STORAGE
+[ -- ] NETWORK
+
+SYSTEM READY_
+
+        </div>
+
+      </section>
+
+
+      <section id="roadmap">
+
+        <h2>[ 05 / ROADMAP ]</h2>
+
+        <div class="roadmap">
+
+          <div class="roadmap-item">
+            <div class="roadmap-version">0.0.1</div>
+            <div>
+              UEFI boot, kernel entry point, text output and basic memory
+              management.
+            </div>
+          </div>
+
+          <div class="roadmap-item">
+            <div class="roadmap-version">0.0.2</div>
+            <div>
+              Keyboard input, mouse support, framebuffer graphics and cursor.
+            </div>
+          </div>
+
+          <div class="roadmap-item">
+            <div class="roadmap-version">0.0.3</div>
+            <div>
+              Desktop, windows, launcher and first graphical applications.
+            </div>
+          </div>
+
+          <div class="roadmap-item">
+            <div class="roadmap-version">0.0.4</div>
+            <div>
+              Storage support, files and a tiny command-line shell.
+            </div>
+          </div>
+
+          <div class="roadmap-item">
+            <div class="roadmap-version">0.1</div>
+            <div>
+              First usable experimental release.
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section>
+
+        <h2>[ 06 / OPEN SOURCE ]</h2>
+
+        <div class="big-text">
+          Build it. Break it. Change it.
+        </div>
+
+        <p style="max-width: 650px; line-height: 1.6; color: var(--muted);">
+          Not-ClassicOS is an open-source Raffy's Weird Projects experiment.
+          The source code is intended to be published under the MIT License.
+        </p>
+
+      </section>
+
+    </main>
+
+
+    <footer>
+
+      <div>
+        © Raffy's Weird Projects<br>
+        Not-ClassicOS
+      </div>
+
+      <div>
+        OPEN SOURCE / MIT
+      </div>
+
+    </footer>
+
+  </div>
+
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+    }
+  </script>
+
+</body>
+</html>
